@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" href="../../images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="the simplest guide to onDrag and onDrop in SwiftUI · bucketfish" />
+    <meta property="og:description" content="just implementing a very simple onDrag and onDrop in SwiftUI. optionally, also how they work, how to extend it, and whatnot. i couldn't find one for my own needs, so here's one for you!" />
+    <meta name="theme-color" content="#add8ff" />
+
+    <title>the simplest guide to onDrag and onDrop in SwiftUI · bucketfish</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../codehilite.css">
+
+  </head>
+  <body>
+
+    <div class="container">
+
+      <div class="box navbar-box">
+        <h1 class="main-heading heading-small"><span style="--n:-1700ms;">b</span><span style="--n:-1600ms;">u</span><span style="--n:-1500ms;">c</span><span style="--n:-1400ms;">k</span><span style="--n:-1300ms;">e</span><span style="--n:-1200ms;">t</span><wbr><span style="--n:-1100ms;">f</span><span style="--n:-1000ms;">i</span><span style="--n:-900ms;">s</span><span style="--n:-800ms;">h</span><span style="--n:-700ms;">'</span><span style="--n:-600ms;">s</span> <span style="--n:-500ms;">b</span><span style="--n:-400ms;">l</span><span style="--n:-300ms;">o</span><span style="--n:-200ms;">g</span></h1>
+        <hr/>
+
+        <div class="navbar">
+          <a class="navbar-item" href="https://bucketfish.me">
+            <div class="">
+              <p>⬅︎ main site</p>
+              <p class="icon">☽</p>
+            </div>
+          </a>
+
+          <a class="navbar-item current" href="../../">
+            <div class="">
+              <p>blog</p>
+              <p class="icon">. ༘⋆</p>
+            </div>
+          </a>
+
+          <a class="navbar-item" href="../../categories">
+            <div class="">
+              <p>categories</p>
+              <p class="icon">⨯꙳</p>
+            </div>
+          </a>
+
+          <!-- <a class="navbar-item" href="now">
+            <div class="">
+              <p>now</p>
+              <p class="icon">⋆⁺.</p>
+            </div>
+          </a>
+
+          <a class="navbar-item" href="about">
+            <div class="">
+              <p>about</p>
+              <p class="icon">☾</p>
+            </div>
+          </a> -->
+
+
+        </div>
+
+      </div>
+
+      <div class="box content-box" id="blog-content">
+        <h2>the simplest guide to onDrag and onDrop in SwiftUI</h2>
+        <p style="text-align: center;"><i>27 june 2023 · reading time: 6 min · category: technicality</i></p>
+        <hr/>
+
+        <p>this post was done using xcode 14.3, in swift 5. <a href="#completed-code">jump to completed code!</a></p>
+<p>when i first tried implementing drag and drop into my project, all i could find was lots of long, extensive tutorials — which is super helpful for learning about the uses of the features, but i had to carefully strip what i needed down, and i struggled a lot with figuring out what did what. so here is the fastest, simplest guide to implementing onDrag and onDrop in SwiftUI.</p>
+<p>before we begin: a quick overview of onDrag and onDrop. these features tie into the greater ecosystem of dragging and dropping data between all kinds of apps. the data sent has to conform to a <a href="https://developer.apple.com/documentation/uniformtypeidentifiers/uttype">uniform type identifier</a>, which basically enforce the kind of data that your view can send or receive.</p>
+<p>for example, a view that receives <code>public.text</code> (often used to transfer plain strings) can receive it from anywhere, much like copy-pasting! keep this in mind when creating your app: a small prototype might not need to take this into consideration, but handling unwanted input is something essential in the long run.</p>
+<p>alright, let's dive in to a small, quick, speedy sample.</p>
+<hr />
+<h2>the important bit</h2>
+<p>we begin with a quick new project — boilerplate SwiftUI code for a blank view. let's also create two <code>Text()</code> views with lots of padding and an overlay rectangle, so we can see where they are — these will be our drag and drop locations!</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">SwiftUI</span>
+
+
+
+<span class="kd">struct</span> <span class="nc">ContentView</span><span class="p">:</span> <span class="n">View</span> <span class="p">{</span>
+
+  <span class="kd">var</span> <span class="nv">body</span><span class="p">:</span> <span class="n">some</span> <span class="n">View</span> <span class="p">{</span>
+
+    <span class="c1">// drop box</span>
+
+    <span class="n">Text</span><span class="p">(</span><span class="s">&quot;nothing here!&quot;</span><span class="p">)</span>
+
+      <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+      <span class="p">.</span><span class="n">overlay</span><span class="p">(</span>
+
+        <span class="n">Rectangle</span><span class="p">()</span>
+
+        <span class="p">.</span><span class="n">stroke</span><span class="p">(.</span><span class="n">white</span><span class="p">)</span>
+
+        <span class="p">)</span>
+
+
+
+    <span class="c1">// drag box</span>
+
+    <span class="n">Text</span><span class="p">(</span><span class="s">&quot;data to transfer&quot;</span><span class="p">)</span>
+
+      <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+      <span class="p">.</span><span class="n">overlay</span><span class="p">(</span>
+
+        <span class="n">Rectangle</span><span class="p">()</span>
+
+        <span class="p">.</span><span class="n">stroke</span><span class="p">(.</span><span class="n">white</span><span class="p">)</span>
+
+        <span class="p">)</span>
+
+  <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div>
+
+<p>we need some way to keep track of the data that's being displayed. it's easy to create a State variable for that, which will refresh the view every time it's changed. we'll just quickly change two lines.</p>
+<div class="codehilite"><pre><span></span><code><span class="kd">struct</span> <span class="nc">ContentView</span><span class="p">:</span> <span class="n">View</span> <span class="p">{</span>
+
+<span class="hll">  <span class="p">@</span><span class="n">State</span> <span class="kd">var</span> <span class="nv">textToDisplay</span> <span class="p">=</span> <span class="s">&quot;nothing here!&quot;</span>
+</span>
+  <span class="kd">var</span> <span class="nv">body</span><span class="p">:</span> <span class="n">some</span> <span class="n">View</span> <span class="p">{</span>
+
+    <span class="c1">// drop box</span>
+
+<span class="hll">    <span class="n">Text</span><span class="p">(</span><span class="n">textToDisplay</span><span class="p">)</span>
+</span>
+      <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</code></pre></div>
+
+<p><img alt="preview of how it looks like so far" src="../../assets/00/0.png" /></p>
+<p>and now for the meat of it. let's start with the drag first — that's the easiest.</p>
+<ol>
+<li>
+<p>we need to add an onDrag modifier to the view so that swift knows that this view is draggable</p>
+</li>
+<li>
+<p>we need to specify what kind of data should be transferred in the drag</p>
+</li>
+<li>
+<p>optionally, we can also provide a custom <em>preview</em> to the dragged view, which will show up and follow the cursor when it's dragged.</p>
+</li>
+</ol>
+<p>we'll just get our drag box to send a string, "some text!", to the other one. to do this, the <code>NSItemProvider</code> comes in handy as a class to quickly create an <code>NSItem</code>, which is what you need to send data through drag and drop.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// drag box</span>
+
+<span class="n">Text</span><span class="p">(</span><span class="s">&quot;some text!&quot;</span><span class="p">)</span>
+
+  <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="hll">  <span class="p">...</span>
+</span><span class="hll">
+</span><span class="hll">  <span class="p">.</span><span class="n">onDrag</span> <span class="p">{</span>
+</span><span class="hll">
+</span><span class="hll">    <span class="bp">NSItemProvider</span><span class="p">(</span><span class="n">object</span><span class="p">:</span> <span class="nb">String</span><span class="p">(</span><span class="s">&quot;some text!&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="bp">NSString</span><span class="p">)</span>
+</span><span class="hll">
+</span>  <span class="p">}</span>    
+</code></pre></div>
+
+<p>now try dragging it!</p>
+<p>you'll find that it seems to only work occasionally. look closer, and it actually only drags when your cursor is clicking on the text and not anywhere else in the box — this is way too precise for our needs. luckily, there's an easy fix: we simply need to add a <code>contentShape</code> modifier in order to click anywhere to drag it.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Text</span><span class="p">(</span><span class="n">textToDisplay</span><span class="p">)</span>
+
+  <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="hll">  <span class="p">.</span><span class="n">contentShape</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">())</span>
+</span>
+
+
+<span class="n">Text</span><span class="p">(</span><span class="s">&quot;some text!&quot;</span><span class="p">)</span>
+
+   <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="hll">   <span class="p">.</span><span class="n">contentShape</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">())</span>
+</span>
+   <span class="p">.</span><span class="n">onDrag</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+</code></pre></div>
+
+<p><img alt="preview of dragging" src="../../assets/00/1.gif" /></p>
+<p>awesome. all we have to do now is to implement dropping — this comes in a few steps, too.</p>
+<ol>
+<li>
+<p>add an onDrop modifier to the view, and specify what content can be received — in this case, we only want  <code>public.text</code></p>
+</li>
+<li>
+<p>make sure that we have at least one item in the dropped stuffs and pick it out</p>
+</li>
+<li>
+<p>load the item's content as a <code>public.text</code></p>
+</li>
+<li>
+<p>make sure that the content can be interpreted as binary data</p>
+</li>
+<li>
+<p>decode the data to get our string!</p>
+</li>
+<li>
+<p>tell swift that the drop operation completed successfully</p>
+</li>
+</ol>
+<p>and here it is, in code.</p>
+<div class="codehilite"><pre><span></span><code><span class="c1">// 1. onDrop modifier</span>
+
+<span class="p">.</span><span class="n">onDrop</span><span class="p">(</span><span class="n">of</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;public.text&quot;</span><span class="p">],</span> <span class="n">isTargeted</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">perform</span><span class="p">:</span> <span class="p">{</span> <span class="n">itemProvider</span><span class="p">,</span> <span class="kc">_</span> <span class="k">in</span>
+
+  <span class="c1">// 2. make sure we have at least one item</span>
+
+  <span class="k">if</span> <span class="kd">let</span> <span class="nv">item</span> <span class="p">=</span> <span class="n">itemProvider</span><span class="p">.</span><span class="bp">first</span> <span class="p">{</span>
+
+    <span class="c1">// 3. load item as public.text</span>
+
+    <span class="n">item</span><span class="p">.</span><span class="n">loadItem</span><span class="p">(</span><span class="n">forTypeIdentifier</span><span class="p">:</span> <span class="s">&quot;public.text&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span> <span class="k">in</span>
+
+
+
+      <span class="c1">// 4. make sure that it can be interpreted as binary data</span>
+
+      <span class="k">if</span> <span class="kd">let</span> <span class="nv">text</span> <span class="p">=</span> <span class="n">data</span> <span class="k">as</span><span class="p">?</span> <span class="n">Data</span><span class="p">{</span>
+
+
+
+        <span class="c1">// 5. decode string and assign it to display</span>
+
+        <span class="n">textToDisplay</span> <span class="p">=</span> <span class="nb">String</span><span class="p">(</span><span class="n">decoding</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span> <span class="k">as</span><span class="p">:</span> <span class="nb">UTF8</span><span class="p">.</span><span class="kc">self</span><span class="p">)</span>
+
+
+
+        <span class="p">}</span>
+
+      <span class="p">}</span>
+
+    <span class="p">}</span>
+
+    <span class="c1">// 6. drop operation completed successfully!</span>
+
+    <span class="k">return</span> <span class="kc">true</span>
+
+  <span class="p">})</span>
+</code></pre></div>
+
+<p><img alt="final demonstration of completed drag and drop" src="../../assets/00/2.gif" /></p>
+<p>and there we go! simplest possible implementation of onDrag and onDrop. if you're interested in more detailed usages, here are some more advanced tutorials on  <a href="https://www.kodeco.com/21679742-drag-and-drop-tutorial-for-swiftui" target="_blank">kodeco.com</a> and <a href="https://swiftui-lab.com/drag-drop-with-swiftui/" target="_blank">swiftui-lab.com</a>. happy dragging!</p>
+<hr />
+<h2><a name="completed-code"></a>completed code</h2>
+<div class="codehilite"><pre><span></span><code><span class="kd">import</span> <span class="nc">SwiftUI</span>
+
+
+
+<span class="kd">struct</span> <span class="nc">ContentView</span><span class="p">:</span> <span class="n">View</span> <span class="p">{</span>
+
+  <span class="p">@</span><span class="n">State</span> <span class="kd">var</span> <span class="nv">textToDisplay</span> <span class="p">=</span> <span class="s">&quot;nothing here!&quot;</span>
+
+
+
+  <span class="kd">var</span> <span class="nv">body</span><span class="p">:</span> <span class="n">some</span> <span class="n">View</span> <span class="p">{</span>
+
+    <span class="n">Text</span><span class="p">(</span><span class="n">textToDisplay</span><span class="p">)</span>
+
+      <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+      <span class="p">.</span><span class="n">contentShape</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">())</span>
+
+      <span class="p">.</span><span class="n">overlay</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">().</span><span class="n">stroke</span><span class="p">(.</span><span class="n">white</span><span class="p">))</span>
+
+      <span class="p">.</span><span class="n">onDrop</span><span class="p">(</span><span class="n">of</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;public.text&quot;</span><span class="p">],</span> <span class="n">isTargeted</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span> <span class="n">perform</span><span class="p">:</span> <span class="p">{</span> <span class="n">itemProvider</span><span class="p">,</span> <span class="kc">_</span> <span class="k">in</span>
+
+        <span class="k">if</span> <span class="kd">let</span> <span class="nv">item</span> <span class="p">=</span> <span class="n">itemProvider</span><span class="p">.</span><span class="bp">first</span> <span class="p">{</span>
+
+          <span class="n">item</span><span class="p">.</span><span class="n">loadItem</span><span class="p">(</span><span class="n">forTypeIdentifier</span><span class="p">:</span> <span class="s">&quot;public.text&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="kc">nil</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span> <span class="k">in</span>
+
+            <span class="k">if</span> <span class="kd">let</span> <span class="nv">text</span> <span class="p">=</span> <span class="n">data</span> <span class="k">as</span><span class="p">?</span> <span class="n">Data</span><span class="p">{</span>
+
+              <span class="n">textToDisplay</span> <span class="p">=</span> <span class="nb">String</span><span class="p">(</span><span class="n">decoding</span><span class="p">:</span> <span class="n">text</span><span class="p">,</span> <span class="k">as</span><span class="p">:</span> <span class="nb">UTF8</span><span class="p">.</span><span class="kc">self</span><span class="p">)</span>
+
+            <span class="p">}</span>
+
+          <span class="p">}</span>
+
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="kc">true</span>
+
+      <span class="p">})</span>
+
+
+
+    <span class="n">Text</span><span class="p">(</span><span class="s">&quot;data to transfer&quot;</span><span class="p">)</span>
+
+      <span class="p">.</span><span class="n">padding</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+      <span class="p">.</span><span class="n">contentShape</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">())</span>
+
+      <span class="p">.</span><span class="n">overlay</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">().</span><span class="n">stroke</span><span class="p">(.</span><span class="n">white</span><span class="p">))</span>
+
+      <span class="p">.</span><span class="n">onDrag</span> <span class="p">{</span> <span class="bp">NSItemProvider</span><span class="p">(</span><span class="n">object</span><span class="p">:</span> <span class="nb">String</span><span class="p">(</span><span class="s">&quot;some text!&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="bp">NSString</span><span class="p">)</span> <span class="p">}</span>    
+
+  <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div>
+      </div>
+
+      <div class="box content-box" id="footer">
+        <hr/>
+        <p style="text-align: center;">posted 27 june 2023 · CC BY-SA 2.0</p>
+      </div>
+
+
+    </div>
+
+  </body>
+</html>
