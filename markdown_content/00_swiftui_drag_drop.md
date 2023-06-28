@@ -126,7 +126,7 @@ and here it is, in code.
 ~~~~
 ![final demonstration of completed drag and drop](../../assets/00/2.gif)
 
-and there we go! simplest possible implementation of onDrag and onDrop. if you're interested in more detailed usages, here are some more advanced tutorials on  <a href="https://www.kodeco.com/21679742-drag-and-drop-tutorial-for-swiftui" target="_blank">kodeco.com</a> and <a href="https://swiftui-lab.com/drag-drop-with-swiftui/" target="_blank">swiftui-lab.com</a>. happy dragging!
+and there we go! simplest possible implementation of onDrag and onDrop. if you're interested in more detailed usages, here are some more advanced tutorials on  <a href="https://www.kodeco.com/21679742-drag-and-drop-tutorial-for-swiftui" target="_blank">kodeco.com</a> and <a href="https://swiftui-lab.com/drag-drop-with-swiftui/" target="_blank">swiftui-lab.com</a>. happy dragging :)
 
 ---
 

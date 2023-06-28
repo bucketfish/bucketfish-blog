@@ -2,16 +2,17 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link rel="icon" href="images/icon.png">
+    <link rel="icon" href="../../images/icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{title}} · bucketfish" />
-    <meta property="og:description" content="what i'm up to right now!" />
+    <meta property="og:description" content="{{description}}" />
     <meta name="theme-color" content="#add8ff" />
 
     <title>{{title}} · bucketfish</title>
     <link rel="stylesheet" href="../../styles.css">
+    <link rel="stylesheet" href="../../codehilite.css">
 
   </head>
   <body>
@@ -20,7 +21,6 @@
 
       <div class="box navbar-box">
         <h1 class="main-heading heading-small"><span style="--n:-1700ms;">b</span><span style="--n:-1600ms;">u</span><span style="--n:-1500ms;">c</span><span style="--n:-1400ms;">k</span><span style="--n:-1300ms;">e</span><span style="--n:-1200ms;">t</span><wbr><span style="--n:-1100ms;">f</span><span style="--n:-1000ms;">i</span><span style="--n:-900ms;">s</span><span style="--n:-800ms;">h</span><span style="--n:-700ms;">'</span><span style="--n:-600ms;">s</span> <span style="--n:-500ms;">b</span><span style="--n:-400ms;">l</span><span style="--n:-300ms;">o</span><span style="--n:-200ms;">g</span></h1>
-
         <hr/>
 
         <div class="navbar">
@@ -64,11 +64,19 @@
 
       </div>
 
-      <div class="box content-box" id="me">
+      <div class="box content-box" id="blog-content">
+        <h2>{{title}}</h2>
+        <p style="text-align: center;"><i>{{date}} · reading time: {{readingtime}} min · category: {{category}}</i></p>
+        <hr/>
+
         {{body}}
-
-
       </div>
+
+      <div class="box content-box" id="footer">
+        <hr/>
+        <p style="text-align: center;">posted {{date}} · CC BY-SA 2.0</p>
+      </div>
+
 
     </div>
 

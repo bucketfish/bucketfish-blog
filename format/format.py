@@ -8,7 +8,7 @@ import markdown
 import json
 
 # grab the template
-with open("p/template.html") as f:
+with open("format/template.html") as f:
     template = f.read()
 
 # grab the data for sorting later, if needed
