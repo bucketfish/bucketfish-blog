@@ -11,6 +11,16 @@ import json
 with open("format/template.html") as f:
     template = f.read()
 
+# template for index
+with open("format/index_template.html") as f:
+    index_template = f.read()
+
+index_posts = ""
+iposts_format = """
+<li>
+{{date}} <a href="{{link}}">{{title}}</a>
+</li>
+"""
 # grab the data for sorting later, if needed
 # with open('scripts/articles.json') as json_file:
 #     article_data = json.load(json_file)
@@ -99,6 +109,13 @@ for f in glob.iglob('markdown_content/*.md'):
 
         file.write(output)
 
+
+    curipost = iposts_format
+    curipost = curipost.replace("{{link}}", "p/" + slug.lower())
+    curipost = curipost.replace("{{title}}", title)
+    curipost = curipost.replace("{{date}}", date)
+
+    index_posts += curipost
     # update data json dict
     #
     # if title not in article_data.keys():
@@ -114,5 +131,8 @@ for f in glob.iglob('markdown_content/*.md'):
     #     outfile.write(json_string)
 
 
-# rebuild the article pages
-# rebuild category pages
+# rebuild the main page
+destination = "index.html"
+with open(destination, 'w') as file:
+    index_template = index_template.replace("{{posts}}", index_posts)
+    file.write(index_template)

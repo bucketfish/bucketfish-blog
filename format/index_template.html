@@ -2,17 +2,16 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <link rel="icon" href="../../images/icon.png">
+    <link rel="icon" href="images/icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="{{title}} · bucketfish" />
-    <meta property="og:description" content="{{description}}" />
+    <meta property="og:title" content="blog · bucketfish" />
+    <meta property="og:description" content="insights and ramblings" />
     <meta name="theme-color" content="#add8ff" />
 
-    <title>{{title}} · bucketfish</title>
-    <link rel="stylesheet" href="../../styles.css">
-    <link rel="stylesheet" href="../../codehilite.css">
+    <title>blog · bucketfish</title>
+    <link rel="stylesheet" href="styles.css">
 
   </head>
   <body>
@@ -21,6 +20,7 @@
 
       <div class="box navbar-box">
         <h1 class="main-heading heading-small"><span style="--n:-1700ms;">b</span><span style="--n:-1600ms;">u</span><span style="--n:-1500ms;">c</span><span style="--n:-1400ms;">k</span><span style="--n:-1300ms;">e</span><span style="--n:-1200ms;">t</span><wbr><span style="--n:-1100ms;">f</span><span style="--n:-1000ms;">i</span><span style="--n:-900ms;">s</span><span style="--n:-800ms;">h</span><span style="--n:-700ms;">'</span><span style="--n:-600ms;">s</span> <span style="--n:-500ms;">b</span><span style="--n:-400ms;">l</span><span style="--n:-300ms;">o</span><span style="--n:-200ms;">g</span></h1>
+
         <hr/>
 
         <div class="navbar">
@@ -31,14 +31,14 @@
             </div>
           </a>
 
-          <a class="navbar-item current" href="../../">
+          <a class="navbar-item current" href="/">
             <div class="">
               <p>blog</p>
               <p class="icon">. ༘⋆</p>
             </div>
           </a>
 
-          <a class="navbar-item" href="../../categories">
+          <a class="navbar-item" href="categories">
             <div class="">
               <p>categories</p>
               <p class="icon">⨯꙳</p>
@@ -64,21 +64,19 @@
 
       </div>
 
-      <div class="box content-box" id="blog-content">
-        <h2>{{title}}</h2>
-        <p style="text-align: center;"><i>{{date}} · reading time: {{readingtime}} min · category: {{category}}</i></p>
-        <hr/>
+      <div class="box content-box" id="me">
+        <h2>welcome to my blog.</h2>
 
-        {{body}}
+        <p>hi, i'm <a href="https://bucketfish.me" target="_blank">bucketfish</a>, and here is where i post about my adventures in creation, rambles, reflections, or whatever i feel like at the moment.</p>
+        <p>my hope is that you find some insight or learn something new. or enjoy yourself — whatever works!</p>
       </div>
 
-      <div class="box content-box" id="footer">
-        <hr/>
-        <p style="text-align: center;">written {{date}} · CC BY-SA 2.0</p>
+      <div class="box content-box">
+        <h2>all posts</h2>
+        <ul>
+          {{posts}}
+        </ul>
       </div>
-
-
     </div>
-
   </body>
 </html>
