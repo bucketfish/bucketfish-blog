@@ -1,7 +1,7 @@
 ^title the simplest guide to onDrag and onDrop in SwiftUI
 ^category technicality
-^readingtime 6
-^description just implementing a very simple onDrag and onDrop in SwiftUI. optionally, also how they work, how to extend it, and whatnot. i couldn't find one for my own needs, so here's one for you!
+^readingtime 4
+^description just implementing a very simple onDrag and onDrop in SwiftUI. that is all. no hassle.
 ^date 27 june 2023
 ^slug swiftui-drag-drop
 
