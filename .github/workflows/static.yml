@@ -34,7 +34,6 @@ jobs:
         with:
           python-version: '3.9'
           cache: 'pip'
-      - run: pip install markdown
       - name: format embeds
         run: python format/format.py
       - name: Setup Pages
